@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Merchant Cash Advance Calculator | Presume Partners</title>
+  <link href="https://fonts.googleapis.com/css?family=Inter:400,700&display=swap" rel="stylesheet">
+  <style>
+    /* Reset and base styles */
+    html, body {
+      height: auto;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    /* Body now handles the background and overall document flow */
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #3853A4 0%, #1a2a5a 100%);
+      min-height: 100vh;
+      width: 100%;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    /* This container handles the overall layout and spacing */
+    .container {
+      max-width: 650px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 20px;
+    }
+    
+    .mca-card {
+      background: #F7F606;
+      color: #3853A4;
+      width: 100%;
+      border-radius: 24px;
+      box-shadow: 0 12px 48px rgba(0,0,0,0.25);
+      padding: 2rem 2rem 1.5rem 2rem;
+      margin-bottom: 1.5rem;
+      box-sizing: border-box;
+      border: 2px solid #3853A4;
+    }
+    
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.3px;
+      color: #3853A4;
+    }
+    
+    label {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      display: block;
+      color: #3853A4;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    input[type="number"], select {
+      width: 100%;
+      padding: 1rem;
+      border-radius: 12px;
+      border: 2px solid #3853A4;
+      background: white;
+      color: #1a2a5a;
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: 1.25rem;
+      box-sizing: border-box;
+      outline: none;
+      transition: all 0.2s;
+    }
+    
+    input[type="number"]:focus, select:focus {
+      border-color: #F7F606;
+      box-shadow: 0 0 0 3px rgba(56,83,164,0.2);
+      background: #fffef0;
+    }
+    
+    .calc-btn {
+      width: 100%;
+      background: #3853A4;
+      color: #F7F606;
+      font-weight: 800;
+      font-size: 1.1rem;
+      border: 2px solid #F7F606;
+      border-radius: 40px;
+      padding: 1rem;
+      margin-top: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .calc-btn:hover, .calc-btn:focus {
+      background: #2a3f7a;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+    
+    .error {
+      color: #dc2626;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      text-align: center;
+      display: none;
+      background: #fee2e2;
+      padding: 8px;
+      border-radius: 12px;
+    }
+    
+    /* Summary Card */
+    .summary-card {
+      background: white;
+      color: #3853A4;
+      border-radius: 20px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.15);
+      padding: 1.8rem;
+      margin-top: 0.5rem;
+      width: 100%;
+      box-sizing: border-box;
+      display: none;
+      border: 2px solid #F7F606;
+    }
+    
+    .summary-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 1.2rem;
+      letter-spacing: -0.3px;
+      color: #3853A4;
+      border-bottom: 3px solid #F7F606;
+      display: inline-block;
+      padding-bottom: 5px;
+    }
+    
+    .summary-row {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    
+    .summary-label {
+      color: #4a5568;
+      font-weight: 600;
+    }
+    
+    .summary-value {
+      font-weight: 800;
+      color: #3853A4;
+      font-size: 1.1rem;
+    }
+    
+    .summary-value.big {
+      color: #3853A4;
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: #F7F60620;
+      padding: 4px 12px;
+      border-radius: 40px;
+    }
+    
+    .disclaimer {
+      background: #fffef0;
+      border-left: 5px solid #3853A4;
+      padding: 14px 18px;
+      margin-top: 20px;
+      border-radius: 16px;
+      font-size: 0.75rem;
+      color: #4a5568;
+      text-align: left;
+      line-height: 1.5;
+      border: 1px solid #e2e8f0;
+    }
+    
+    .disclaimer strong {
+      color: #3853A4;
+      font-weight: 800;
+    }
+    
+    .disclaimer a {
+      color: #3853A4;
+      text-decoration: underline;
+      font-weight: 700;
+    }
+    
+    .brand-footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.7rem;
+      color: #F7F606;
+      opacity: 0.9;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 10px;
+      }
+      .mca-card,
+      .summary-card {
+        padding: 1.2rem;
+      }
+      h1 {
+        font-size: 1.5rem;
+      }
+      .summary-title {
+        font-size: 1.2rem;
+      }
+      .summary-row {
+        font-size: 0.9rem;
+      }
+      .summary-value.big {
+        font-size: 1.2rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .container {
+        padding: 5px;
+      }
+      .mca-card,
+      .summary-card {
+        padding: 1rem;
+      }
+      h1 {
+        font-size: 1.3rem;
+      }
+      .calc-btn {
+        font-size: 0.9rem;
+        padding: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="mca-card" id="calculator">
+      <h1>⚡ MCA Payment Estimator</h1>
+      <div>
+        <label for="advanceAmount">💰 Advance Amount ($)</label>
+        <input type="number" id="advanceAmount" min="10000" max="100000000" step="1000" value="50000" required>
+      </div>
+      <div>
+        <label for="factorRate">📈 Factor Rate (1.05 – 2.00)</label>
+        <input type="number" id="factorRate" min="1.05" max="2.0" step="0.01" value="1.25" required>
+      </div>
+      <div>
+        <label for="repayDuration">📅 Repayment Term</label>
+        <select id="repayDuration">
+          <option value="90">3 Months (90 Days)</option>
+          <option value="120">4 Months (120 Days)</option>
+          <option value="180" selected>6 Months (180 Days)</option>
+          <option value="270">9 Months (270 Days)</option>
+          <option value="365">12 Months (365 Days)</option>
+          <option value="548">18 Months (548 Days)</option>
+          <option value="730">24 Months (730 Days)</option>
+        </select>
+      </div>
+      <div>
+        <label for="paymentFrequency">🔄 Payment Frequency</label>
+        <select id="paymentFrequency">
+          <option value="daily">Daily (Business Days)</option>
+          <option value="weekly">Weekly</option>
+          <option value="bi-weekly">Bi-Weekly</option>
+        </select>
+      </div>
+      <div class="error" id="errorMessage"></div>
+      <button class="calc-btn" id="calculateBtn">Calculate Estimate →</button>
+      
+      <!-- DISCLAIMER inside calculator card -->
+      <div class="disclaimer">
+        <strong>⚠️ Disclaimer: This is an estimate only.</strong> Actual payment amounts, factor rates, and terms may vary based on underwriting, business performance, and final approval. For an accurate quote, please contact a licensed MCA agent.
+      </div>
+    </div>
+    
+    <div class="summary-card" id="results">
+      <div class="summary-title">📋 Your Estimated Summary</div>
+      <div class="summary-row">
+        <span class="summary-label">Total Repayable Amount:</span>
+        <span class="summary-value" id="totalRepayableAmount">$0.00</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label">Estimated Number of Payments:</span>
+        <span class="summary-value" id="estimatedPayments">0</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label" id="paymentPeriodLabel">Estimated Payment per Period:</span>
+        <span class="summary-value big" id="paymentPerPeriod">$0.00</span>
+      </div>
+      <div class="summary-row">
+        <span class="summary-label">Estimated Cost of Advance (Fees):</span>
+        <span class="summary-value" id="costOfAdvance">$0.00</span>
+      </div>
+      <div class="disclaimer" style="margin-top: 18px; background: #F7F60610; border-left-color: #F7F606;">
+        <strong>📌 Note:</strong> This calculation is a preliminary estimate. Your final MCA offer may include additional fees or different repayment structures. <strong>Speak with a funding specialist for exact terms.</strong>
+      </div>
+    </div>
+    <div class="brand-footer">
+      Presume Partners LLC | MCA Funding Estimates
+    </div>
+  </div>
+  
+  <script>
+    const AVG_BUSINESS_DAYS_PER_WEEK = 5;
+    const DAYS_PER_WEEK = 7;
+
+    function formatCurrency(amount) {
+      return amount.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits:2});
+    }
+
+    function validateInputs(amount, rate) {
+      const errorDiv = document.getElementById('errorMessage');
+      errorDiv.style.display = "none";
+      if(isNaN(amount) || amount < 10000 || amount > 100000000) {
+        errorDiv.textContent = "⚠️ Advance amount must be between $10,000 and $100,000,000.";
+        errorDiv.style.display = "block";
+        return false;
+      }
+      if(isNaN(rate) || rate < 1.05 || rate > 2.0) {
+        errorDiv.textContent = "⚠️ Factor rate must be between 1.05 and 2.00.";
+        errorDiv.style.display = "block";
+        return false;
+      }
+      return true;
+    }
+
+    document.getElementById('calculateBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+
+      const amount = parseFloat(document.getElementById('advanceAmount').value);
+      const rate = parseFloat(document.getElementById('factorRate').value);
+      const duration = parseInt(document.getElementById('repayDuration').value, 10);
+      const freq = document.getElementById('paymentFrequency').value;
+
+      if(!validateInputs(amount, rate)) {
+        document.getElementById('results').style.display = "none";
+        return;
+      }
+
+      const totalRepayable = amount * rate;
+      let totalPayments = 0, periodText = "";
+      
+      // Intelligent payment count based on frequency
+      switch(freq) {
+        case 'daily':
+          // Daily payments: approximate number of business days within the term
+          const weeksInTerm = duration / DAYS_PER_WEEK;
+          totalPayments = Math.round(weeksInTerm * AVG_BUSINESS_DAYS_PER_WEEK);
+          periodText = "Daily (business days)";
+          break;
+        case 'weekly':
+          totalPayments = Math.max(1, Math.round(duration / DAYS_PER_WEEK));
+          periodText = "Weekly";
+          break;
+        case 'bi-weekly':
+          totalPayments = Math.max(1, Math.round(duration / (2 * DAYS_PER_WEEK)));
+          periodText = "Bi-Weekly";
+          break;
+        default: totalPayments = 1;
+      }
+      
+      // Ensure at least 1 payment
+      totalPayments = Math.max(1, totalPayments);
+      const paymentPerPeriod = totalRepayable / totalPayments;
+      const costOfAdvance = totalRepayable - amount;
+
+      // Update DOM
+      document.getElementById('totalRepayableAmount').textContent = formatCurrency(totalRepayable);
+      document.getElementById('estimatedPayments').textContent = totalPayments;
+      document.getElementById('paymentPeriodLabel').innerHTML = `💵 Estimated Payment per ${periodText}:`;
+      document.getElementById('paymentPerPeriod').textContent = formatCurrency(paymentPerPeriod);
+      document.getElementById('costOfAdvance').textContent = formatCurrency(costOfAdvance);
+
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.style.display = "block";
+      
+      // Smooth scroll to results for better UX
+      resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+    
+    // Allow Enter key to trigger calculation
+    const inputs = document.querySelectorAll('#calculator input, #calculator select');
+    inputs.forEach(input => {
+      input.addEventListener('keypress', function(e) {
+        if(e.key === 'Enter') {
+          e.preventDefault();
+          document.getElementById('calculateBtn').click();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

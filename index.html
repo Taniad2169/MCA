@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Merchant Cash Advance Calculator | Presume Partners</title>
+  <title>MCA & Business Loan Calculator | Presume Partners</title>
   <link href="https://fonts.googleapis.com/css?family=Inter:400,700&display=swap" rel="stylesheet">
   <style>
     /* Reset and base styles */
@@ -15,7 +15,6 @@
       box-sizing: border-box;
     }
     
-    /* Body now handles the background and overall document flow */
     body {
       font-family: 'Inter', sans-serif;
       background: linear-gradient(135deg, #3853A4 0%, #1a2a5a 100%);
@@ -25,7 +24,6 @@
       padding: 20px;
     }
 
-    /* This container handles the overall layout and spacing */
     .container {
       max-width: 650px;
       width: 100%;
@@ -58,6 +56,32 @@
       color: #3853A4;
     }
     
+    .rate-toggle {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 1.25rem;
+      background: rgba(56,83,164,0.1);
+      padding: 8px;
+      border-radius: 60px;
+    }
+    
+    .rate-option {
+      flex: 1;
+      text-align: center;
+      padding: 10px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: all 0.2s;
+      background: transparent;
+      color: #3853A4;
+    }
+    
+    .rate-option.active {
+      background: #3853A4;
+      color: #F7F606;
+    }
+    
     label {
       font-size: 0.9rem;
       font-weight: 700;
@@ -87,6 +111,14 @@
       border-color: #F7F606;
       box-shadow: 0 0 0 3px rgba(56,83,164,0.2);
       background: #fffef0;
+    }
+    
+    .rate-field {
+      display: none;
+    }
+    
+    .rate-field.active-field {
+      display: block;
     }
     
     .calc-btn {
@@ -122,7 +154,6 @@
       border-radius: 12px;
     }
     
-    /* Summary Card */
     .summary-card {
       background: white;
       color: #3853A4;
@@ -195,12 +226,6 @@
       font-weight: 800;
     }
     
-    .disclaimer a {
-      color: #3853A4;
-      text-decoration: underline;
-      font-weight: 700;
-    }
-    
     .brand-footer {
       text-align: center;
       margin-top: 20px;
@@ -210,60 +235,59 @@
     }
     
     @media (max-width: 768px) {
-      .container {
-        padding: 10px;
-      }
-      .mca-card,
-      .summary-card {
-        padding: 1.2rem;
-      }
-      h1 {
-        font-size: 1.5rem;
-      }
-      .summary-title {
-        font-size: 1.2rem;
-      }
-      .summary-row {
-        font-size: 0.9rem;
-      }
-      .summary-value.big {
-        font-size: 1.2rem;
-      }
+      .container { padding: 10px; }
+      .mca-card, .summary-card { padding: 1.2rem; }
+      h1 { font-size: 1.5rem; }
+      .summary-title { font-size: 1.2rem; }
     }
     
     @media (max-width: 480px) {
-      .container {
-        padding: 5px;
-      }
-      .mca-card,
-      .summary-card {
-        padding: 1rem;
-      }
-      h1 {
-        font-size: 1.3rem;
-      }
-      .calc-btn {
-        font-size: 0.9rem;
-        padding: 0.8rem;
-      }
+      .container { padding: 5px; }
+      .mca-card, .summary-card { padding: 1rem; }
+      h1 { font-size: 1.3rem; }
+      .calc-btn { font-size: 0.9rem; padding: 0.8rem; }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="mca-card" id="calculator">
-      <h1>⚡ MCA Payment Estimator</h1>
+      <h1>⚡ Business Loan Calculator</h1>
+      
+      <!-- Rate Type Toggle -->
+      <div class="rate-toggle">
+        <div class="rate-option active" data-rate="factor">Factor Rate (MCA)</div>
+        <div class="rate-option" data-rate="interest">Interest Rate (Term Loan)</div>
+      </div>
+      
       <div>
-        <label for="advanceAmount">💰 Advance Amount ($)</label>
+        <label for="advanceAmount">💰 Loan Amount ($)</label>
         <input type="number" id="advanceAmount" min="10000" max="100000000" step="1000" value="50000" required>
       </div>
-      <div>
+      
+      <!-- Factor Rate Field (Default Active) -->
+      <div id="factorRateField" class="rate-field active-field">
         <label for="factorRate">📈 Factor Rate (1.05 – 2.00)</label>
         <input type="number" id="factorRate" min="1.05" max="2.0" step="0.01" value="1.25" required>
+        <div class="disclaimer" style="margin-top: 5px; padding: 8px; font-size: 0.7rem;">
+          💡 Factor rates are common for Merchant Cash Advances (1.10 = 10% cost of capital)
+        </div>
       </div>
+      
+      <!-- Interest Rate Field (Hidden Initially) - USA market rates for business loans: typically 8% - 35% APR depending on risk -->
+      <div id="interestRateField" class="rate-field">
+        <label for="interestRate">📉 Interest Rate (APR) — 6% to 45%</label>
+        <input type="number" id="interestRate" min="6" max="45" step="0.25" value="18.5" required>
+        <div class="disclaimer" style="margin-top: 5px; padding: 8px; font-size: 0.7rem;">
+          💡 Typical business loan rates: 8% (prime) to 35% (higher risk). Our estimate uses standard amortization.
+        </div>
+      </div>
+      
       <div>
         <label for="repayDuration">📅 Repayment Term</label>
         <select id="repayDuration">
+          <option value="30">1 Month (30 Days)</option>
+          <option value="60">2 Months (60 Days)</option>
           <option value="90">3 Months (90 Days)</option>
           <option value="120">4 Months (120 Days)</option>
           <option value="180" selected>6 Months (180 Days)</option>
@@ -273,20 +297,22 @@
           <option value="730">24 Months (730 Days)</option>
         </select>
       </div>
+      
       <div>
         <label for="paymentFrequency">🔄 Payment Frequency</label>
         <select id="paymentFrequency">
-          <option value="daily">Daily (Business Days)</option>
+          <option value="daily">Daily (Business Days - MCA Standard)</option>
           <option value="weekly">Weekly</option>
           <option value="bi-weekly">Bi-Weekly</option>
+          <option value="monthly">Monthly (Term Loans / Small Projects)</option>
         </select>
       </div>
+      
       <div class="error" id="errorMessage"></div>
       <button class="calc-btn" id="calculateBtn">Calculate Estimate →</button>
       
-      <!-- DISCLAIMER inside calculator card -->
       <div class="disclaimer">
-        <strong>⚠️ Disclaimer: This is an estimate only.</strong> Actual payment amounts, factor rates, and terms may vary based on underwriting, business performance, and final approval. For an accurate quote, please contact a licensed MCA agent.
+        <strong>⚠️ Disclaimer: This is an estimate only.</strong> Actual rates, fees, and terms vary based on underwriting, credit profile, and lender approval. For an accurate quote, please contact a funding specialist.
       </div>
     </div>
     
@@ -305,81 +331,195 @@
         <span class="summary-value big" id="paymentPerPeriod">$0.00</span>
       </div>
       <div class="summary-row">
-        <span class="summary-label">Estimated Cost of Advance (Fees):</span>
+        <span class="summary-label" id="costLabel">Estimated Cost of Financing:</span>
         <span class="summary-value" id="costOfAdvance">$0.00</span>
       </div>
+      <div class="summary-row" id="aprRow" style="display: none;">
+        <span class="summary-label">Effective APR (Estimated):</span>
+        <span class="summary-value" id="effectiveAPR">0%</span>
+      </div>
       <div class="disclaimer" style="margin-top: 18px; background: #F7F60610; border-left-color: #F7F606;">
-        <strong>📌 Note:</strong> This calculation is a preliminary estimate. Your final MCA offer may include additional fees or different repayment structures. <strong>Speak with a funding specialist for exact terms.</strong>
+        <strong>📌 Note:</strong> Factor rate products have no compound interest; interest rate loans use standard amortization. Speak with a specialist for final approval.
       </div>
     </div>
     <div class="brand-footer">
-      Presume Partners LLC | MCA Funding Estimates
+      Presume Partners LLC | Business Funding Estimates
     </div>
   </div>
   
   <script>
     const AVG_BUSINESS_DAYS_PER_WEEK = 5;
     const DAYS_PER_WEEK = 7;
+    let activeRateType = 'factor'; // 'factor' or 'interest'
+
+    // Rate Type Toggle Logic
+    const factorOption = document.querySelector('[data-rate="factor"]');
+    const interestOption = document.querySelector('[data-rate="interest"]');
+    const factorField = document.getElementById('factorRateField');
+    const interestField = document.getElementById('interestRateField');
+    const factorInput = document.getElementById('factorRate');
+    const interestInput = document.getElementById('interestRate');
+
+    function setActiveRateType(type) {
+      activeRateType = type;
+      if (type === 'factor') {
+        factorOption.classList.add('active');
+        interestOption.classList.remove('active');
+        factorField.classList.add('active-field');
+        interestField.classList.remove('active-field');
+        // Remove required from interest, add to factor
+        interestInput.removeAttribute('required');
+        factorInput.setAttribute('required', 'required');
+      } else {
+        interestOption.classList.add('active');
+        factorOption.classList.remove('active');
+        interestField.classList.add('active-field');
+        factorField.classList.remove('active-field');
+        factorInput.removeAttribute('required');
+        interestInput.setAttribute('required', 'required');
+      }
+    }
+
+    factorOption.addEventListener('click', () => setActiveRateType('factor'));
+    interestOption.addEventListener('click', () => setActiveRateType('interest'));
 
     function formatCurrency(amount) {
       return amount.toLocaleString('en-US', {style:'currency', currency:'USD', minimumFractionDigits:2});
     }
 
-    function validateInputs(amount, rate) {
+    function validateInputs(amount, factorRate, interestRate, type) {
       const errorDiv = document.getElementById('errorMessage');
       errorDiv.style.display = "none";
       if(isNaN(amount) || amount < 10000 || amount > 100000000) {
-        errorDiv.textContent = "⚠️ Advance amount must be between $10,000 and $100,000,000.";
+        errorDiv.textContent = "⚠️ Loan amount must be between $10,000 and $100,000,000.";
         errorDiv.style.display = "block";
         return false;
       }
-      if(isNaN(rate) || rate < 1.05 || rate > 2.0) {
-        errorDiv.textContent = "⚠️ Factor rate must be between 1.05 and 2.00.";
-        errorDiv.style.display = "block";
-        return false;
+      if (type === 'factor') {
+        if(isNaN(factorRate) || factorRate < 1.05 || factorRate > 2.0) {
+          errorDiv.textContent = "⚠️ Factor rate must be between 1.05 and 2.00.";
+          errorDiv.style.display = "block";
+          return false;
+        }
+      } else {
+        if(isNaN(interestRate) || interestRate < 6 || interestRate > 45) {
+          errorDiv.textContent = "⚠️ Interest rate must be between 6% and 45% APR.";
+          errorDiv.style.display = "block";
+          return false;
+        }
       }
       return true;
+    }
+
+    // Calculate monthly payment using standard loan amortization formula
+    function calculateAmortizationPayment(principal, annualRate, months) {
+      const monthlyRate = annualRate / 100 / 12;
+      if (monthlyRate === 0) return principal / months;
+      const payment = principal * (monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
+      return payment;
     }
 
     document.getElementById('calculateBtn').addEventListener('click', function(e) {
       e.preventDefault();
 
       const amount = parseFloat(document.getElementById('advanceAmount').value);
-      const rate = parseFloat(document.getElementById('factorRate').value);
-      const duration = parseInt(document.getElementById('repayDuration').value, 10);
+      const factorRate = parseFloat(document.getElementById('factorRate').value);
+      const interestRate = parseFloat(document.getElementById('interestRate').value);
+      const durationDays = parseInt(document.getElementById('repayDuration').value, 10);
       const freq = document.getElementById('paymentFrequency').value;
 
-      if(!validateInputs(amount, rate)) {
+      if(!validateInputs(amount, factorRate, interestRate, activeRateType)) {
         document.getElementById('results').style.display = "none";
         return;
       }
 
-      const totalRepayable = amount * rate;
-      let totalPayments = 0, periodText = "";
+      let totalRepayable = 0;
+      let costOfAdvance = 0;
+      let totalPayments = 0;
+      let periodText = "";
+      let paymentPerPeriod = 0;
+      let effectiveAPR = 0;
+
+      // Convert duration days to months for interest rate calculations
+      const durationMonths = durationDays / 30.44; // average days per month
       
-      // Intelligent payment count based on frequency
-      switch(freq) {
-        case 'daily':
-          // Daily payments: approximate number of business days within the term
-          const weeksInTerm = duration / DAYS_PER_WEEK;
-          totalPayments = Math.round(weeksInTerm * AVG_BUSINESS_DAYS_PER_WEEK);
-          periodText = "Daily (business days)";
-          break;
-        case 'weekly':
-          totalPayments = Math.max(1, Math.round(duration / DAYS_PER_WEEK));
-          periodText = "Weekly";
-          break;
-        case 'bi-weekly':
-          totalPayments = Math.max(1, Math.round(duration / (2 * DAYS_PER_WEEK)));
-          periodText = "Bi-Weekly";
-          break;
-        default: totalPayments = 1;
+      if (activeRateType === 'factor') {
+        // FACTOR RATE CALCULATION (Simple multiplication, no compounding)
+        totalRepayable = amount * factorRate;
+        costOfAdvance = totalRepayable - amount;
+        
+        // Calculate payment frequency based on factor rate (fixed total)
+        switch(freq) {
+          case 'daily':
+            const weeksInTerm = durationDays / DAYS_PER_WEEK;
+            totalPayments = Math.max(1, Math.round(weeksInTerm * AVG_BUSINESS_DAYS_PER_WEEK));
+            periodText = "Daily (business days)";
+            break;
+          case 'weekly':
+            totalPayments = Math.max(1, Math.round(durationDays / DAYS_PER_WEEK));
+            periodText = "Weekly";
+            break;
+          case 'bi-weekly':
+            totalPayments = Math.max(1, Math.round(durationDays / (2 * DAYS_PER_WEEK)));
+            periodText = "Bi-Weekly";
+            break;
+          case 'monthly':
+            totalPayments = Math.max(1, Math.round(durationDays / 30));
+            periodText = "Monthly";
+            break;
+          default: totalPayments = 1;
+        }
+        paymentPerPeriod = totalRepayable / totalPayments;
+        
+        // Estimate simple APR for factor rate (for comparison)
+        const years = durationDays / 365;
+        if (years > 0) {
+          effectiveAPR = ((factorRate - 1) / years) * 100;
+        }
+        document.getElementById('costLabel').innerHTML = "💰 Estimated Cost of Advance (Fees):";
+        document.getElementById('aprRow').style.display = 'flex';
+        document.getElementById('effectiveAPR').textContent = effectiveAPR.toFixed(2) + '% (simple equivalent)';
+        
+      } else {
+        // INTEREST RATE CALCULATION (Amortized loan - standard business loan)
+        const monthlyPayment = calculateAmortizationPayment(amount, interestRate, durationMonths);
+        totalPayments = Math.max(1, Math.round(durationMonths));
+        periodText = "Monthly";
+        
+        // Adjust payment frequency if user selects non-monthly (convert appropriately)
+        switch(freq) {
+          case 'weekly':
+            paymentPerPeriod = monthlyPayment * 12 / 52;
+            totalPayments = Math.round(durationMonths * 4.345);
+            periodText = "Weekly";
+            break;
+          case 'bi-weekly':
+            paymentPerPeriod = monthlyPayment * 12 / 26;
+            totalPayments = Math.round(durationMonths * 2.1725);
+            periodText = "Bi-Weekly";
+            break;
+          case 'daily':
+            paymentPerPeriod = monthlyPayment * 12 / 260;
+            totalPayments = Math.round(durationMonths * 21.67);
+            periodText = "Daily (business days)";
+            break;
+          default:
+            paymentPerPeriod = monthlyPayment;
+            periodText = "Monthly";
+            totalPayments = Math.round(durationMonths);
+        }
+        
+        totalRepayable = paymentPerPeriod * totalPayments;
+        costOfAdvance = totalRepayable - amount;
+        effectiveAPR = interestRate;
+        document.getElementById('costLabel').innerHTML = "💰 Total Interest Paid:";
+        document.getElementById('aprRow').style.display = 'flex';
+        document.getElementById('effectiveAPR').textContent = effectiveAPR.toFixed(2) + '% APR';
       }
-      
+
       // Ensure at least 1 payment
       totalPayments = Math.max(1, totalPayments);
-      const paymentPerPeriod = totalRepayable / totalPayments;
-      const costOfAdvance = totalRepayable - amount;
+      paymentPerPeriod = totalRepayable / totalPayments;
 
       // Update DOM
       document.getElementById('totalRepayableAmount').textContent = formatCurrency(totalRepayable);
@@ -391,7 +531,7 @@
       const resultsDiv = document.getElementById('results');
       resultsDiv.style.display = "block";
       
-      // Smooth scroll to results for better UX
+      // Smooth scroll to results
       resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     });
     
@@ -405,6 +545,9 @@
         }
       });
     });
+    
+    // Initialize with factor rate active
+    setActiveRateType('factor');
   </script>
 </body>
 </html>
